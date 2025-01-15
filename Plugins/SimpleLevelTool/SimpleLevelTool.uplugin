@@ -1,0 +1,21 @@
+﻿{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "SimpleLevelTool",
+	"Description": "Love from Zhu XueSong & Senyi",
+	"Category": "Other",
+	"CreatedBy": "Senyi",
+	"DocsURL": "https://github.com/Zhikun0201/Unreal-SnapActorToViewportFloor",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "SimpleLevelTool",
+			"Type": "Editor",
+			"LoadingPhase": "PreDefault"
+		}
+	]
+}
