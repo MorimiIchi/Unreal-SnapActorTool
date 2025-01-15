@@ -2,7 +2,7 @@
 
 ---
 
-**Press `Ctrl + T` to move the selected Actor to the front of the viewport and align it down to the floor.**
+**Press `Ctrl + T` to move the selected Actor to the front of the viewport and snap it down to the floor.**
 
 **Usage**: Place the Plugine folder in your project directory. After compiling, enable the SimpleLevelTool plugin in the editor’s Plugine panel.
 
