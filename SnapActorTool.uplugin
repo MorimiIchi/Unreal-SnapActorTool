@@ -2,10 +2,10 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "SimpleLevelTool",
-	"Description": "Love from Zhu XueSong & Senyi",
+	"FriendlyName": "Snap Actor Tool",
+	"Description": "Snap selected actors to the viewport floor.",
 	"Category": "Other",
-	"CreatedBy": "Senyi",
+	"CreatedBy": "Morimichi",
 	"DocsURL": "https://github.com/MorimiIchi/Unreal-SnapActorToViewportFloor",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
@@ -13,7 +13,7 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "SimpleLevelTool",
+			"Name": "SnapActorTool",
 			"Type": "Editor",
 			"LoadingPhase": "PreDefault"
 		}

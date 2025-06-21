@@ -1,7 +1,6 @@
 // El psy congroo.
 
-
-#include "SnapToViewportFloor.h"
+#include "SnapActor.h"
 
 #include "ActorGroupingUtils.h"
 #include "Selection.h"
@@ -17,7 +16,7 @@
 #include "Subsystems/UnrealEditorSubsystem.h"
 #include "Widgets/Notifications/SNotificationList.h"
 
-void USnapToViewportFloor::SnapToViewportFloor()
+void USnapActor::SnapActor()
 {
 	if (!GetUnrealEditorSubsystem())
 	{
@@ -29,11 +28,11 @@ void USnapToViewportFloor::SnapToViewportFloor()
 	SnapSelectionsToFloor(TargetLocation);
 }
 
-FVector USnapToViewportFloor::GetViewportTraceLocation() const
+FVector USnapActor::GetViewportTraceLocation() const
 {
 	FVector TargetLocation;
 
-	const UWorld* EditorWorld = UnrealEditorSubsystem->GetEditorWorld();
+	const UWorld *EditorWorld = UnrealEditorSubsystem->GetEditorWorld();
 
 	FVector CameraLocation;
 	FRotator CameraRotation;
@@ -63,12 +62,12 @@ FVector USnapToViewportFloor::GetViewportTraceLocation() const
 	return TargetLocation;
 }
 
-void USnapToViewportFloor::SnapSelectionsToFloor(const FVector& TargetCenterLocation) const
+void USnapActor::SnapSelectionsToFloor(const FVector &TargetCenterLocation) const
 {
-	if (const UTypedElementSelectionSet* SelectionSet = GEditor->GetSelectedActors()->GetElementSelectionSet())
+	if (const UTypedElementSelectionSet *SelectionSet = GEditor->GetSelectedActors()->GetElementSelectionSet())
 	{
-		const FScopedTransaction Transaction(NSLOCTEXT("SimpleLevelTool", "SnapSelectionsToFloor",
-		                                               "Snap Elements To Floor"));
+		const FScopedTransaction Transaction(NSLOCTEXT("SnapActorTool", "SnapSelectionsToFloor",
+													   "Snap Elements To Floor"));
 
 		FScopedLevelDirtied LevelDirtyCallback;
 
@@ -78,7 +77,7 @@ void USnapToViewportFloor::SnapSelectionsToFloor(const FVector& TargetCenterLoca
 		bool bSnappedElements = false;
 		SelectionSet->ForEachSelectedElement<ITypedElementWorldInterface>(
 			[this, &LevelDirtyCallback, &bSnappedElements, TargetCenterLocation, AverageSelectionLocation](
-			const TTypedElement<ITypedElementWorldInterface>& InElement)
+				const TTypedElement<ITypedElementWorldInterface> &InElement)
 			{
 				if (SnapElement(InElement, TargetCenterLocation, AverageSelectionLocation))
 				{
@@ -86,15 +85,14 @@ void USnapToViewportFloor::SnapSelectionsToFloor(const FVector& TargetCenterLoca
 					LevelDirtyCallback.Request();
 				}
 				return true;
-			}
-		);
+			});
 
 		// Update the pivot location
 		if (bSnappedElements)
 		{
 			if (TTypedElement<ITypedElementWorldInterface> LastElement =
-				UEditorElementSubsystem::GetLastSelectedEditorManipulableElement(
-					UEditorElementSubsystem::GetEditorNormalizedSelectionSet(*SelectionSet)))
+					UEditorElementSubsystem::GetLastSelectedEditorManipulableElement(
+						UEditorElementSubsystem::GetEditorNormalizedSelectionSet(*SelectionSet)))
 			{
 				FTransform LastElementTransform;
 				if (LastElement.GetWorldTransform(LastElementTransform))
@@ -103,13 +101,12 @@ void USnapToViewportFloor::SnapSelectionsToFloor(const FVector& TargetCenterLoca
 
 					if (UActorGroupingUtils::IsGroupingActive())
 					{
-						if (TTypedElement<ITypedElementObjectInterface> LastObjectElement = SelectionSet->
-							GetElementList()->GetElement<ITypedElementObjectInterface>(LastElement))
+						if (TTypedElement<ITypedElementObjectInterface> LastObjectElement = SelectionSet->GetElementList()->GetElement<ITypedElementObjectInterface>(LastElement))
 						{
-							if (AActor* LastActor = Cast<AActor>(LastObjectElement.GetObject()))
+							if (AActor *LastActor = Cast<AActor>(LastObjectElement.GetObject()))
 							{
 								// Set group pivot for the root-most group
-								if (AGroupActor* ActorGroupRoot = AGroupActor::GetRootForActor(LastActor, true, true))
+								if (AGroupActor *ActorGroupRoot = AGroupActor::GetRootForActor(LastActor, true, true))
 								{
 									ActorGroupRoot->CenterGroupLocation();
 								}
@@ -122,8 +119,8 @@ void USnapToViewportFloor::SnapSelectionsToFloor(const FVector& TargetCenterLoca
 		else
 		{
 			// Notify the user that no elements were snapped
-			FNotificationInfo Info(NSLOCTEXT("SimpleLevelTool", "SnapToFloorNoElementsSnapped",
-			                                 "No elements were snapped to the floor."));
+			FNotificationInfo Info(NSLOCTEXT("SnapActorTool", "SnapToFloorNoElementsSnapped",
+											 "No elements were snapped to the floor."));
 			Info.ExpireDuration = 5.0f;
 			FSlateNotificationManager::Get().AddNotification(Info);
 		}
@@ -132,9 +129,9 @@ void USnapToViewportFloor::SnapSelectionsToFloor(const FVector& TargetCenterLoca
 	}
 }
 
-bool USnapToViewportFloor::SnapElement(const FTypedElementHandle& InElementHandle,
-                                       const FVector& TargetCenterLocation,
-                                       const FVector& AverageSelectionLocation)
+bool USnapActor::SnapElement(const FTypedElementHandle &InElementHandle,
+							 const FVector &TargetCenterLocation,
+							 const FVector &AverageSelectionLocation)
 {
 	// 1. 元素有效性检查
 	if (!InElementHandle)
@@ -143,7 +140,7 @@ bool USnapToViewportFloor::SnapElement(const FTypedElementHandle& InElementHandl
 	}
 
 	// 2. 获取当前元素对应的世界接口
-	const UTypedElementRegistry* Registry = UTypedElementRegistry::GetInstance();
+	const UTypedElementRegistry *Registry = UTypedElementRegistry::GetInstance();
 	const TTypedElement<ITypedElementWorldInterface> ElementWorldHandle = Registry->GetElement<
 		ITypedElementWorldInterface>(
 		InElementHandle);
@@ -177,11 +174,11 @@ bool USnapToViewportFloor::SnapElement(const FTypedElementHandle& InElementHandl
 	// 5. 向下对齐
 	FTransform NewTransform;
 	if (ElementWorldHandle.FindSuitableTransformAlongPath(
-		StartLocation,
-		StartLocation + Direction * WORLD_MAX,
-		FCollisionShape::MakeBox(Extent),
-		TArray<FTypedElementHandle>(),
-		NewTransform))
+			StartLocation,
+			StartLocation + Direction * WORLD_MAX,
+			FCollisionShape::MakeBox(Extent),
+			TArray<FTypedElementHandle>(),
+			NewTransform))
 	{
 		// 保留原本的旋转和缩放
 		NewTransform.SetRotation(ElementTransform.GetRotation());
@@ -210,7 +207,7 @@ bool USnapToViewportFloor::SnapElement(const FTypedElementHandle& InElementHandl
 	return true;
 }
 
-bool USnapToViewportFloor::GetUnrealEditorSubsystem()
+bool USnapActor::GetUnrealEditorSubsystem()
 {
 	if (!UnrealEditorSubsystem)
 	{

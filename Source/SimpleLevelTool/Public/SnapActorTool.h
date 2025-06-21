@@ -4,7 +4,7 @@
 
 #include "Modules/ModuleManager.h"
 
-class FSimpleLevelToolModule : public IModuleInterface
+class FSnapActorToolModule : public IModuleInterface
 {
 public:
 	/** IModuleInterface implementation */

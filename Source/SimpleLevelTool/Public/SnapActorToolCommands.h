@@ -9,13 +9,13 @@
 /**
  * 
  */
-class SIMPLELEVELTOOL_API FSimpleLevelCommands : public TCommands<FSimpleLevelCommands>
+class SNAPACTORTOOL_API FSnapActorToolCommands : public TCommands<FSnapActorToolCommands>
 {
 public:
-	FSimpleLevelCommands()
+	FSnapActorToolCommands()
 		: TCommands(
-			TEXT("SimpleLevelCommands"),
-			NSLOCTEXT("Contexts", "SimpleLevelTool", "Simple Level Tool"),
+			TEXT("SnapActorToolCommands"),
+			NSLOCTEXT("Contexts", "SnapActorTool", "Snap Actor Tool"),
 			NAME_None,
 			FAppStyle::GetAppStyleSetName()// Can use your own style
 		)
@@ -24,5 +24,5 @@ public:
 
 	virtual void RegisterCommands() override;
 
-	TSharedPtr<FUICommandInfo> SnapToViewportFloor;
+	TSharedPtr<FUICommandInfo> SnapActorToFloor;
 };

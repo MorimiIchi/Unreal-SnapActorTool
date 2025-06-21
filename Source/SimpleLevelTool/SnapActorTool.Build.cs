@@ -2,12 +2,11 @@
 
 using UnrealBuildTool;
 
-public class SimpleLevelTool : ModuleRules
+public class SnapActorTool : ModuleRules
 {
-	public SimpleLevelTool(ReadOnlyTargetRules Target) : base(Target)
+	public SnapActorTool(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-
 
 		PublicDependencyModuleNames.AddRange(
 			new string[]

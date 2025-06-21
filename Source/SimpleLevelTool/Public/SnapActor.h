@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class SIMPLELEVELTOOL_API USnapToViewportFloor : public UActorActionUtility
+class SNAPACTORTOOL_API USnapActor : public UActorActionUtility
 {
 	GENERATED_BODY()
 
