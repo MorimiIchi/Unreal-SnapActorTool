@@ -14,7 +14,6 @@ public class SnapActorTool : ModuleRules
 				"Blutility", 
 				"Core",
 				"EditorFramework",
-				"EditorScriptingUtilities",
 				"EditorStyle",
 				"UnrealEd",
 			}

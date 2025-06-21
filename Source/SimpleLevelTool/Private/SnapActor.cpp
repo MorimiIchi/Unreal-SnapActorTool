@@ -30,36 +30,6 @@ void USnapActor::SnapActor()
 	SnapSelectionsToFloor(TargetLocation);
 }
 
-void USnapActor::GetViewportTraceLocation(FVector& TargetLocation) const
-{
-	const UWorld* EditorWorld = UnrealEditorSubsystem->GetEditorWorld();
-
-	FVector CameraLocation;
-	FRotator CameraRotation;
-	UnrealEditorSubsystem->GetLevelViewportCameraInfo(CameraLocation, CameraRotation);
-
-	// Get the location in front of the camera
-	const FVector TraceStart = CameraLocation;
-	const FVector TraceEnd = CameraLocation + CameraRotation.Vector() * TraceDistance;
-
-	DrawDebugLine(EditorWorld, TraceStart, TraceEnd, FColor::Red, false, 2.0f);
-
-	FHitResult HitResult;
-	EditorWorld->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility);
-
-	if (HitResult.bBlockingHit)
-	{
-		TargetLocation = HitResult.ImpactPoint;
-		DrawDebugSphere(EditorWorld, TargetLocation, 20.0f, 32, FColor::Green, false, 2.0f);
-		TargetLocation.Z = CameraLocation.Z;
-	}
-	else
-	{
-		TargetLocation = TraceEnd;
-		DrawDebugSphere(EditorWorld, TargetLocation, 20.0f, 32, FColor::Green, false, 2.0f);
-	}
-}
-
 void USnapActor::GetCursorLocation(FVector& TargetLocation) const
 {
 	FLevelEditorModule& LevelEditorModule =
@@ -109,7 +79,7 @@ void USnapActor::GetCursorLocation(FVector& TargetLocation) const
 		/*out*/ TraceDirection // 射线方向（单位向量）
 	);
 
-	const FVector TraceEnd = TraceStart + TraceDirection * WORLD_MAX;
+	const FVector TraceEnd = TraceStart + TraceDirection * TraceDistance;
 
 	FHitResult HitResult;
 	EditorWorld->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility);
@@ -118,6 +88,34 @@ void USnapActor::GetCursorLocation(FVector& TargetLocation) const
 	{
 		TargetLocation = HitResult.ImpactPoint;
 		TargetLocation.Z = TraceStart.Z;
+	}
+	else
+	{
+		GetViewportCenterLocation(TargetLocation);
+	}
+}
+
+void USnapActor::GetViewportCenterLocation(FVector& TargetLocation) const
+{
+	const UWorld* EditorWorld = UnrealEditorSubsystem->GetEditorWorld();
+
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	UnrealEditorSubsystem->GetLevelViewportCameraInfo(CameraLocation, CameraRotation);
+
+	// Get the location in front of the camera
+	const FVector TraceStart = CameraLocation;
+	const FVector TraceEnd = CameraLocation + CameraRotation.Vector() * TraceDistance;
+
+	DrawDebugLine(EditorWorld, TraceStart, TraceEnd, FColor::Red, false, 2.0f);
+
+	FHitResult HitResult;
+	EditorWorld->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility);
+
+	if (HitResult.bBlockingHit)
+	{
+		TargetLocation = HitResult.ImpactPoint;
+		TargetLocation.Z = CameraLocation.Z;
 	}
 	else
 	{
@@ -238,8 +236,8 @@ bool USnapActor::SnapElement(const FTypedElementHandle& InElementHandle,
 
 	// 改成从“包围盒底”往上抬半高，也就是把包围盒中心放到地面上
 	const FVector StartLocation = LocationOffset
-								+ TargetCenterLocation
-								+ FVector(0.f, 0.f, HalfHeight);
+		+ TargetCenterLocation
+		+ FVector(0.f, 0.f, HalfHeight);
 
 
 	// 朝向：垂直向下
