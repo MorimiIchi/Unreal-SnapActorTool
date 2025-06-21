@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Editor/Blutility/Classes/ActorActionUtility.h"
-#include "SnapToViewportFloor.generated.h"
+#include "SnapActor.generated.h"
 
 /**
  * 
@@ -15,7 +15,7 @@ class SNAPACTORTOOL_API USnapActor : public UActorActionUtility
 	GENERATED_BODY()
 
 public:
-	void SnapToViewportFloor();
+	void SnapActor();
 
 	UPROPERTY()
 	float TraceDistance = 1500.0f;

@@ -16,7 +16,7 @@ void FSnapActorToolModule::StartupModule()
 	const TSharedRef<FUICommandList>& CommandList = LevelEditorModule.GetGlobalLevelEditorActions();
 
 	CommandList->MapAction(
-		FSnapActorToolCommands::Get().SnapToViewportFloor,
+		FSnapActorToolCommands::Get().SnapActorToFloor,
 		FExecuteAction::CreateRaw(this, &FSnapActorToolModule::OnAlignToFloorFrontViewport),
 		FCanExecuteAction()
 	);
@@ -30,7 +30,7 @@ void FSnapActorToolModule::ShutdownModule()
 void FSnapActorToolModule::OnAlignToFloorFrontViewport()
 {
 	USnapActor* AlignToFloorFrontViewport = NewObject<USnapActor>();
-	AlignToFloorFrontViewport->SnapToViewportFloor();
+	AlignToFloorFrontViewport->SnapActor();
 }
 
 #undef LOCTEXT_NAMESPACE
