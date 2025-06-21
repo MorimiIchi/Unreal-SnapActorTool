@@ -31,7 +31,7 @@ public class SnapActorTool : ModuleRules
 				"TypedElementFramework",
 				"TypedElementRuntime",
 				"Slate",
-				"SlateCore",
+				"SlateCore", 
 			}
 		);
 	}
